@@ -1,0 +1,45 @@
+workflows:
+  dopamine-build:
+    name: Dopamine Build
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      vars:
+        NIGHTLY: "0"
+        BUILD_STANDALONE: "0"
+      xcode: latest
+    scripts:
+      - name: Set COMMIT_HASH if NIGHTLY=1
+        script: |
+          if [ "$NIGHTLY" = "1" ]; then
+            export COMMIT_HASH=$(git rev-parse HEAD)
+            echo "COMMIT_HASH=$COMMIT_HASH" >> $CM_ENV
+          fi
+      
+      - name: Build BaseBin
+        script: |
+          cd $CM_BUILD_DIR/BaseBin
+          make
+      
+      - name: Build Packages
+        script: |
+          cd $CM_BUILD_DIR/Packages
+          make
+      
+      - name: Build Application
+        script: |
+          cd $CM_BUILD_DIR/Application
+          make
+      
+      - name: Build Standalone
+        script: |
+          cd $CM_BUILD_DIR/Standalone
+          make
+    
+    artifacts:
+      - BaseBin/basebin.tar
+      - BaseBin/basebin.tc
+      - Packages/*/*.deb
+      - Application/Dopamine.ipa
+      - Application/Dopamine.tipa
+      - Standalone/Dopamine.tar
