@@ -18,10 +18,12 @@ workflows:
           git clone https://github.com/CRKatri/trustcache.git
           cd trustcache
           
-          # Build with OPENSSL=1 and explicit paths to OpenSSL headers/libs
-          make OPENSSL=1 \
-            CFLAGS="-I/opt/homebrew/opt/openssl@3/include" \
-            LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib" || {
+          # Export CFLAGS/LDFLAGS so they're inherited by all make invocations
+          export CFLAGS="-I/opt/homebrew/opt/openssl@3/include"
+          export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
+          
+          # Build with OPENSSL=1
+          make OPENSSL=1 || {
             echo "ERROR: trustcache build failed!"
             exit 1
           }
