@@ -11,15 +11,32 @@ workflows:
     scripts:
       - name: Install dependencies
         script: |
-          brew install ldid libarchive libmd
+          brew install ldid libarchive ossp-uuid
           
-          # Build and install trustcache from source
+          # Build and install trustcache from source using OpenSSL (avoids libmd dependency)
           cd /tmp
           git clone https://github.com/CRKatri/trustcache.git
           cd trustcache
-          make
+          
+          # Build with OPENSSL=1 to use macOS built-in crypto instead of libmd
+          make OPENSSL=1 || {
+            echo "ERROR: trustcache build failed!"
+            exit 1
+          }
+          
+          # Verify the binary was built
+          if [ ! -f trustcache ]; then
+            echo "ERROR: trustcache binary not found after build!"
+            exit 1
+          fi
+          
           sudo cp trustcache /usr/local/bin/trustcache
           sudo chmod +x /usr/local/bin/trustcache
+          
+          # Verify installation
+          which trustcache || { echo "ERROR: trustcache not in PATH!"; exit 1; }
+          trustcache --help || { echo "ERROR: trustcache binary not working!"; exit 1; }
+          
           cd $CM_BUILD_DIR
           
           # Install Theos
