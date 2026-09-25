@@ -9,9 +9,15 @@ workflows:
         BUILD_STANDALONE: "0"
       xcode: latest
     scripts:
-      - name: Install ldid
+      - name: Install dependencies
         script: |
           brew install ldid
+          
+          # Install Theos
+          export THEOS=~/theos
+          git clone --recursive https://github.com/theos/theos.git $THEOS
+          echo "THEOS=$THEOS" >> $CM_ENV
+          echo "THEOS_MAKE_PATH=$THEOS/makefiles" >> $CM_ENV
       
       - name: Set COMMIT_HASH if NIGHTLY=1
         script: |
