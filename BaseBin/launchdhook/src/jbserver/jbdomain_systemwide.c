@@ -78,7 +78,8 @@ bool systemwide_domain_allowed(audit_token_t clientToken)
 
 static int systemwide_get_jbroot(char **rootPathOut)
 {
-	*rootPathOut = strdup(jbinfo(rootPath));
+	// Force /var/69 for palera1n-style setup
+	*rootPathOut = strdup("/var/69");
 	return 0;
 }
 
@@ -195,11 +196,11 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 
 	// Generate sandbox extensions for the requesting process
 	char *sandboxExtensionsArr[] = {
-		// Make /var/jb readable and executable
+		// Make /var/69 readable and executable
 		sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read", JBROOT_PATH(""), 0, *processToken),
 		sandbox_extension_issue_file_to_process("com.apple.sandbox.executable", JBROOT_PATH(""), 0, *processToken),
 
-		// Make /var/jb/var/mobile writable
+		// Make /var/69/var/mobile writable
 		sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read-write", JBROOT_PATH("/var/mobile"), 0, *processToken),
 	};
 	int sandboxExtensionsCount = sizeof(sandboxExtensionsArr) / sizeof(char *);

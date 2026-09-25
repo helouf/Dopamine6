@@ -128,7 +128,7 @@ int basebin_generate_internal(NSString *originUsrLibPath, NSString *basebinPath,
 	[[NSFileManager defaultManager] createDirectoryAtPath:genPath withIntermediateDirectories:YES attributes:nil error:nil];
 
 	if (!comingFromJBUpdate) {
-		// Copy /usr/lib to /var/jb/basebin/.fakelib
+		// Copy /usr/lib to /var/69/basebin/.fakelib
 		[[NSFileManager defaultManager] removeItemAtPath:fakelibPath error:nil];
 		[[NSFileManager defaultManager] createDirectoryAtPath:fakelibPath withIntermediateDirectories:YES attributes:nil error:nil];
 		carbonCopy(originUsrLibPath, fakelibPath);
@@ -136,10 +136,10 @@ int basebin_generate_internal(NSString *originUsrLibPath, NSString *basebinPath,
 		// Delete the dyld inside .fakelib
 		[[NSFileManager defaultManager] removeItemAtPath:fakelibDyldPath error:nil];
 
-		// Symlink .fakelib/dyld -> /var/jb/basebin/gen/dyld
+		// Symlink .fakelib/dyld -> /var/69/basebin/gen/dyld
 		[[NSFileManager defaultManager] createSymbolicLinkAtPath:fakelibDyldPath withDestinationPath:targetDyldPath error:nil];
 
-		// Symlink .fakelib/systemhook.dylib -> /var/jb/basebin/systemhook.dylib
+		// Symlink .fakelib/systemhook.dylib -> /var/69/basebin/systemhook.dylib
 		[[NSFileManager defaultManager] createSymbolicLinkAtPath:fakelibSystemHookPath withDestinationPath:targetSystemhookPath error:nil];
 
 		// Backup original dyld

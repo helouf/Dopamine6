@@ -245,20 +245,20 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (NSError *)updateVarJbSymlink
 {
-    // Remove /var/jb as it might be wrong
+    // Remove /var/69 as it might be wrong
     NSError *error;
-    if (![self deleteSymlinkAtPath:@"/var/jb" error:&error]) {
-        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"]) {
-            if (![[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:&error]) {
-                return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedReplacing userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Removing /var/jb directory failed with error: %@", error]}];
+    if (![self deleteSymlinkAtPath:@"/var/69" error:&error]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/69"]) {
+            if (![[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:&error]) {
+                return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedReplacing userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Removing /var/69 directory failed with error: %@", error]}];
             }
         }
         else {
-            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedReplacing userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Removing /var/jb symlink failed with error: %@", error]}];
+            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedReplacing userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Removing /var/69 symlink failed with error: %@", error]}];
         }
     }
 
-    return [self createSymlinkAtPath:@"/var/jb" toPath:JBROOT_PATH(@"/") createIntermediateDirectories:YES];;
+    return [self createSymlinkAtPath:@"/var/69" toPath:JBROOT_PATH(@"/") createIntermediateDirectories:YES];;
 }
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion
@@ -346,7 +346,7 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
                 if (![[NSFileManager defaultManager] removeItemAtPath:corruptedFilePath error:nil]) {
                     // Try to recover from file system corruption
                     // In Dopamine 3.0 - 3.0.6 there was an OOB kwritebuf in jbupdate that could cause a panic
-                    // This would sometimes leave /var/jb/basebin/gen/dyld.old behind in a corrupted state
+                    // This would sometimes leave /var/69/basebin/gen/dyld.old behind in a corrupted state
                     // We cannot delete this file unfortunately, but we can move it
 
                     NSString *activePrebootPath = [[DOEnvironmentManager sharedManager] activePrebootPath];
@@ -606,7 +606,7 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if (error) return error;
-    [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:nil];
     return error;
 }
 

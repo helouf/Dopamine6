@@ -74,12 +74,12 @@ void JBFixMobilePermissions(void)
 	@autoreleasepool {
 		NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:JBROOT_PATH(@"/var") error:nil];
 		if ([attributes[NSFileType] isEqualToString:NSFileTypeSymbolicLink]) {
-			// /var/jb/var is a symlink, abort
+			// /var/69/var is a symlink, abort
 			return;
 		}
 		attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:JBROOT_PATH(@"/var/mobile") error:nil];
 		if ([attributes[NSFileType] isEqualToString:NSFileTypeSymbolicLink]) {
-			// /var/jb/var/mobile is a symlink, abort
+			// /var/69/var/mobile is a symlink, abort
 			return;
 		}
 

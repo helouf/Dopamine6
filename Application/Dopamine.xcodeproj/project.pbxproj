@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -699,46 +699,9 @@
 		C075B0CB2B8F2BCE009A26BB /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		2F11A31F301BFDAF00C1C9F0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				ClearSword.h,
-				ClearSword.m,
-				exploit/common.h,
-				exploit/free_thread.c,
-				exploit/free_thread.h,
-				exploit/krw.c,
-				exploit/krw.h,
-				exploit/phys_oob.c,
-				exploit/phys_oob.h,
-				exploit/poc.c,
-				exploit/poc.h,
-				exploit/socket.c,
-				exploit/socket.h,
-				exploit/surface.c,
-				exploit/surface.h,
-				exploit/utils.c,
-				exploit/utils.h,
-				Info.plist,
-			);
-			target = 2F11A313301BFDAE00C1C9F0 /* momentarius */;
-		};
-		8C3B2DF8301BC05200C979A6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			publicHeaders = (
-				ClearSword.h,
-			);
-			target = 8C3B2DED301BC05200C979A6 /* ClearSword */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		8C3B2DEF301BC05200C979A6 /* ClearSword */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8C3B2DF8301BC05200C979A6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 2F11A31F301BFDAF00C1C9F0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClearSword; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
+
+
 
 /* Begin PBXFrameworksBuildPhase section */
 		2F11A316301BFDAE00C1C9F0 /* Frameworks */ = {
@@ -1374,7 +1337,6 @@
 				8C2B1FEE2B5324DE009BA166 /* dmaFail */,
 				8C5FA8D52BDD36B6008C246F /* weightBufs */,
 				8C5FA8E52BDD36BF008C246F /* multicast_bytecopy */,
-				8C3B2DEF301BC05200C979A6 /* ClearSword */,
 			);
 			path = Exploits;
 			sourceTree = "<group>";
@@ -1619,7 +1581,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				8C3B2DEF301BC05200C979A6 /* ClearSword */,
 			);
 			name = momentarius;
 			packageProductDependencies = (
@@ -1703,7 +1664,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				8C3B2DEF301BC05200C979A6 /* ClearSword */,
 			);
 			name = ClearSword;
 			packageProductDependencies = (
@@ -2534,7 +2494,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Dopamine/Exploits/Titan/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2570,7 +2530,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Dopamine/Exploits/Titan/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2999,7 +2959,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../BaseBin/.include";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../BaseBin/.include",
+					"$(SRCROOT)/Dopamine/Headers",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../BaseBin/.build",
@@ -3061,7 +3024,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../BaseBin/.include";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../BaseBin/.include",
+					"$(SRCROOT)/Dopamine/Headers",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../BaseBin/.build",

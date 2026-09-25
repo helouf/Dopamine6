@@ -194,11 +194,11 @@ void prepare_bootstrap(void)
 
 void update_var_jb_symlink(void)
 {
-	printf("Updating /var/jb symlink... "); fflush(stdout); usleep(1000);
+	printf("Updating /var/69 symlink... "); fflush(stdout); usleep(1000);
 	DOBootstrapper *bootstrapper = [[DOBootstrapper alloc] init];
 	NSError *error = [bootstrapper updateVarJbSymlink];
 	if (error) {
-		printf("\nUpdating /var/jb symlink failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
+		printf("\nUpdating /var/69 symlink failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
 		exit(-1);
 	}
 	printf("OK\n");
@@ -248,7 +248,7 @@ void load_var_jb_daemons(void)
 	// I spent a lot of time figuring out why and it's something related to us being considered the wrong session / domain
 	// No clue how to fix that, but I also figured out that 'launchctl bootstrap system' works...
 	// Supposedly because this command allows us to manually specifiy a session / domain (which in this case is 'system')
-	exec_cmd_trusted("/var/jb/usr/bin/launchctl", "bootstrap", "system", "/var/jb/Library/LaunchDaemons", NULL);
+	exec_cmd_trusted("/var/69/usr/bin/launchctl", "bootstrap", "system", "/var/69/Library/LaunchDaemons", NULL);
 }
 
 void install_builtin_packages(void)
@@ -280,9 +280,9 @@ void finalize_bootstrap_if_needed(bool *finalized)
 	char *shellBackup = getenv("SHELL") ? strdup(getenv("SHELL")) : NULL;
 
 	setenv("NO_PASSWORD_PROMPT", "1", 1);
-	setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
+	setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/69/sbin:/var/69/bin:/var/69/usr/sbin:/var/69/usr/bin", 1);
 	setenv("TERM", "xterm-256color", 1);
-	setenv("SHELL", "/var/jb/bin/sh", 1);
+	setenv("SHELL", "/var/69/bin/sh", 1);
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath:JBROOT_PATH(@"/prep_bootstrap.sh")]) {
 		printf("Running prep_bootstrap script...\n");

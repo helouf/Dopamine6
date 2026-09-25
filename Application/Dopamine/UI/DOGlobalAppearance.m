@@ -21,7 +21,8 @@
     UIButtonConfiguration *configuration = [UIButtonConfiguration plainButtonConfiguration];
     configuration.imagePadding = 10;
     configuration.baseForegroundColor = [UIColor whiteColor];
-    configuration.titleLineBreakMode = NSLineBreakByClipping;
+    // titleLineBreakMode requires iOS 16.4+, not available in iOS 16.2 SDK
+    // configuration.titleLineBreakMode = NSLineBreakByClipping;
 
     // IN DARK MODE, APPLE JUST ADDS WHITE WHEN A BUTTON IS HIGHLIGHTED WHEN IT'S SET UP VIA UIButtonConfiguration
     // UNFORTUNATELY THEY FORGOT ABOUT THE POSSIBILITY ABOUT THERE BEING A WHITE BUTTON, SO THOSE JUST DON'T SHOW ANY HIGHLIGHT COLOR

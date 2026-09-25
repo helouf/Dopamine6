@@ -140,13 +140,12 @@ extern char **environ;
             }
         }
         
-        if (randomizedJailbreakPath) {
-            NSString *jailbreakRootPath = [randomizedJailbreakPath stringByAppendingPathComponent:@"procursus"];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
-                // This attribute serves as the primary source of what the root path is
-                // Anything else in the jailbreak will get it from here
-                gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.fileSystemRepresentation);
-            }
+        // MODIFIED: Use fixed /var/69 path
+        NSString *jailbreakRootPath = @"/var/69";
+        if ([[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
+            // This attribute serves as the primary source of what the root path is
+            // Anything else in the jailbreak will get it from here
+            gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.fileSystemRepresentation);
         }
     }
 }
@@ -191,18 +190,16 @@ extern char **environ;
             [randomString appendFormat:@"%C", randomCharacter];
         }
         
-        NSString *randomJailbreakFolderName = [NSString stringWithFormat:@"dopamine-%@", randomString];
-        NSString *randomizedJailbreakPath = [activePrebootPath stringByAppendingPathComponent:randomJailbreakFolderName];
-        NSString *jailbreakRootPath = [randomizedJailbreakPath stringByAppendingPathComponent:@"procursus"];
+        // MODIFIED: Use fixed /var/69 path instead of random dopamine-XXXXXX
+        NSString *jailbreakRootPath = @"/var/69";
         
         if (_bootstrapNeedsMigration) {
             NSString *oldRandomizedJailbreakPath = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
-            [[NSFileManager defaultManager] moveItemAtPath:oldRandomizedJailbreakPath toPath:randomizedJailbreakPath error:&error];
+            [[NSFileManager defaultManager] removeItemAtPath:oldRandomizedJailbreakPath error:nil];
         }
-        else {
-            if (![[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
-                [[NSFileManager defaultManager] createDirectoryAtPath:jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:&error];
-            }
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:&error];
         }
         
         if (!error) {
@@ -637,7 +634,7 @@ extern char **environ;
 
 - (BOOL)isJailbreakHidden
 {
-    return ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"];
+    return ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/69"];
 }
 
 - (void)setJailbreakHidden:(BOOL)hidden
@@ -657,10 +654,10 @@ extern char **environ;
                     [self setFakelibMounted:NO];
                     jbclient_platform_set_systemwide_domain_enabled(false);
                 }
-                [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
+                [[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:nil];
             }
             else {
-                [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/jb" withDestinationPath:JBROOT_PATH(@"/") error:nil];
+                [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/69" withDestinationPath:JBROOT_PATH(@"/") error:nil];
                 if ([self isJailbroken]) {
                     jbclient_platform_set_systemwide_domain_enabled(true);
                     [self setFakelibMounted:YES];

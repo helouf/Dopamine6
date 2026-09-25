@@ -91,10 +91,7 @@ dopamine: .build .include libjailbreak XPF ChOma
 	rm -rf .include
 	mkdir -p .include
 	cp -r _external/include/* .include
-# If the SDK already ships XPC (it does so in iOS 17.4+), remove the local copy of it
-ifneq (,$(wildcard $(shell xcrun --sdk iphoneos --show-sdk-path)/usr/include/xpc.modulemap))
-	rm -rf .include/xpc
-endif
+# DO NOT remove xpc headers - iOS 16.2 SDK xpc.modulemap exists but headers are in private location
 
 basebin.tc: subprojects
 	@if [ -f ./prebuilt/trustcache ]; then \

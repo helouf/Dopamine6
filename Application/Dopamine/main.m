@@ -35,7 +35,7 @@ int main(int argc, char * argv[]) {
     }
     
     if ([DOEnvironmentManager sharedManager].isJailbroken) {
-        setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
+        setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/69/sbin:/var/69/bin:/var/69/usr/sbin:/var/69/usr/bin", 1);
         setenv("TERM", "xterm-256color", 1);
     }
     
