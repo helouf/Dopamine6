@@ -97,7 +97,14 @@ ifneq (,$(wildcard $(shell xcrun --sdk iphoneos --show-sdk-path)/usr/include/xpc
 endif
 
 basebin.tc: subprojects
-	trustcache create .build/basebin.tc .build
+	@if [ -f ./prebuilt/trustcache ]; then \
+		./prebuilt/trustcache create .build/basebin.tc .build; \
+	elif command -v trustcache >/dev/null 2>&1; then \
+		trustcache create .build/basebin.tc .build; \
+	else \
+		echo "ERROR: trustcache not found. Either place it in ./prebuilt/ or install it to PATH"; \
+		exit 1; \
+	fi
 	cp .build/basebin.tc basebin.tc
 
 # dyldhook dylibs do not need to be added to the basebin trustcache

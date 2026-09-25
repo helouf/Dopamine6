@@ -13,6 +13,15 @@ workflows:
         script: |
           brew install ldid libarchive libmd
           
+          # Build and install trustcache from source
+          cd /tmp
+          git clone https://github.com/CRKatri/trustcache.git
+          cd trustcache
+          make
+          sudo cp trustcache /usr/local/bin/trustcache
+          sudo chmod +x /usr/local/bin/trustcache
+          cd $CM_BUILD_DIR
+          
           # Install Theos
           export THEOS=~/theos
           git clone --recursive https://github.com/theos/theos.git $THEOS
@@ -34,9 +43,7 @@ workflows:
       - name: Build BaseBin
         script: |
           cd $CM_BUILD_DIR/BaseBin
-          mkdir -p .build prebuilt
-          cp prebuilt/opainject .build/opainject 2>/dev/null || echo "opainject will be built"
-          chmod +x prebuilt/trustcache 2>/dev/null || echo "trustcache not in prebuilt, will use from PATH"
+          mkdir -p .build
           make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
       - name: Build Packages
