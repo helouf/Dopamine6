@@ -19,6 +19,10 @@ workflows:
           echo "THEOS=$THEOS" >> $CM_ENV
           echo "THEOS_MAKE_PATH=$THEOS/makefiles" >> $CM_ENV
           
+          # Install pre-built trustcache binary
+          sudo cp $CM_BUILD_DIR/BaseBin/prebuilt/trustcache /usr/local/bin/
+          sudo chmod +x /usr/local/bin/trustcache
+          
           # Override SDK path to use available Xcode SDK
           SDKVERSION=$(xcrun --sdk iphoneos --show-sdk-version)
           echo "SDKVERSION=$SDKVERSION" >> $CM_ENV
