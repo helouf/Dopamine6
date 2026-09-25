@@ -34,13 +34,30 @@ workflows:
       - name: Build BaseBin
         script: |
           cd $CM_BUILD_DIR/BaseBin
-          # Use pre-built trustcache binary and add to PATH
-          export PATH="$CM_BUILD_DIR/BaseBin/prebuilt:$PATH"
-          which trustcache || { echo "ERROR: prebuilt trustcache not found"; ls -la prebuilt/; exit 1; }
           
-          # Use pre-built opainject binary to avoid CoreSymbolication framework issues
+          # Debug: Show what's in prebuilt directory
+          echo "=== Contents of prebuilt directory ==="
+          ls -laR prebuilt/ || echo "prebuilt directory not found"
+          
+          # Verify and copy pre-built binaries to /usr/local/bin
+          if [ ! -f "prebuilt/trustcache" ]; then
+            echo "ERROR: trustcache binary not found in prebuilt directory"
+            echo "Checking if git-lfs is needed..."
+            git lfs ls-files
+            exit 1
+          fi
+          
+          # Make trustcache executable and copy to /usr/local/bin
+          chmod +x prebuilt/trustcache
+          sudo cp prebuilt/trustcache /usr/local/bin/trustcache
+          
+          # Verify trustcache is accessible
+          which trustcache && trustcache --version || { echo "ERROR: trustcache not in PATH after install"; exit 1; }
+          
+          # Use pre-built opainject binary
           mkdir -p .build
           cp prebuilt/opainject .build/opainject
+          
           # Build everything except opainject
           make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
