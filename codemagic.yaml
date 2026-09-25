@@ -13,13 +13,15 @@ workflows:
         script: |
           brew install ldid libarchive ossp-uuid
           
-          # Build and install trustcache from source using OpenSSL (avoids libmd dependency)
+          # Build and install trustcache from source using OpenSSL
           cd /tmp
           git clone https://github.com/CRKatri/trustcache.git
           cd trustcache
           
-          # Build with OPENSSL=1 to use macOS built-in crypto instead of libmd
-          make OPENSSL=1 || {
+          # Build with OPENSSL=1 and explicit paths to OpenSSL headers/libs
+          make OPENSSL=1 \
+            CFLAGS="-I/opt/homebrew/opt/openssl@3/include" \
+            LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib" || {
             echo "ERROR: trustcache build failed!"
             exit 1
           }
