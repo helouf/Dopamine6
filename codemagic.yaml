@@ -41,6 +41,8 @@ workflows:
           # Use pre-built opainject binary to avoid CoreSymbolication framework issues
           mkdir -p .build
           cp prebuilt/opainject .build/opainject
+          # Set DYLD_FALLBACK_LIBRARY_PATH so trustcache can find libmd
+          export DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/opt/libmd/lib:$DYLD_FALLBACK_LIBRARY_PATH"
           # Build everything except opainject
           make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
