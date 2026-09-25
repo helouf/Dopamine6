@@ -1,0 +1,14 @@
+diff --git a/Makefile b/Makefile
+index 503b5c0..65f9359 100644
+--- a/Makefile
++++ b/Makefile
+@@ -9,6 +9,8 @@ opainject_FILES = main.m dyld.m shellcode_inject.m rop_inject.m thread_utils.m t
+ opainject_CFLAGS = -fobjc-arc -DTHEOS_LEAN_AND_MEAN
+ opainject_CODESIGN_FLAGS = -Sentitlements.plist
+ opainject_INSTALL_PATH = /usr/local/bin
+-opainject_PRIVATE_FRAMEWORKS = CoreSymbolication
++# CoreSymbolication framework is not available on all build environments
++# We only need the header definitions which are included locally
++# opainject_PRIVATE_FRAMEWORKS = CoreSymbolication
+ 
+ include $(THEOS_MAKE_PATH)/tool.mk

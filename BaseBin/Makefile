@@ -30,6 +30,7 @@ MachOMerger: .build .include
 
 opainject: .build .include
 	@patch -p0 -N opainject/arm64.h < arm64_h_stdint.patch || true
+	@patch -p0 -N opainject/Makefile < opainject_makefile.patch || true
 	$(MAKE) -C opainject FINALPACKAGE=1
 	@ldid -Cadhoc -s opainject/.theos/obj/opainject
 	@cp opainject/.theos/obj/opainject .build
