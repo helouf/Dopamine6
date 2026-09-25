@@ -9,6 +9,10 @@ workflows:
         BUILD_STANDALONE: "0"
       xcode: latest
     scripts:
+      - name: Install ldid
+        script: |
+          brew install ldid
+      
       - name: Set COMMIT_HASH if NIGHTLY=1
         script: |
           if [ "$NIGHTLY" = "1" ]; then
