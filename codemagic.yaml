@@ -67,16 +67,13 @@ workflows:
           # Remove prebuilt trustcache binary with broken dependencies
           # This will force the Makefile to use the one we built from source
           rm -f prebuilt/trustcache
+          
+          # Remove conflicting XPC module map from source (conflicts with iOS SDK's built-in XPC module)
+          # This must be done before any builds that create .include directory
+          rm -f _external/include/xpc/module.modulemap
+          
           mkdir -p .build
-          
-          # Build initial components to populate .include directory
-          make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl
-          
-          # Remove conflicting XPC module map (conflicts with iOS SDK's built-in XPC module)
-          rm -f .include/xpc/module.modulemap
-          
-          # Continue with remaining builds
-          make idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
+          make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
       - name: Build Packages
         script: |
