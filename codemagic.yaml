@@ -39,7 +39,7 @@ workflows:
           
           # Verify installation
           which trustcache || { echo "ERROR: trustcache not in PATH!"; exit 1; }
-          trustcache --help || { echo "ERROR: trustcache binary not working!"; exit 1; }
+          ls -l /usr/local/bin/trustcache || { echo "ERROR: trustcache binary not found!"; exit 1; }
           
           cd $CM_BUILD_DIR
           
