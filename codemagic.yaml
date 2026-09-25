@@ -45,6 +45,10 @@ workflows:
       - name: Build BaseBin
         script: |
           cd $CM_BUILD_DIR/BaseBin
+          # Ensure trustcache is in PATH
+          export PATH="/usr/local/bin:$PATH"
+          which trustcache || { echo "ERROR: trustcache not found in PATH"; exit 1; }
+          trustcache --version || echo "trustcache installed"
           # Use pre-built opainject binary to avoid CoreSymbolication framework issues
           mkdir -p .build
           cp prebuilt/opainject .build/opainject
