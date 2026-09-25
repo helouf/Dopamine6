@@ -19,19 +19,6 @@ workflows:
           echo "THEOS=$THEOS" >> $CM_ENV
           echo "THEOS_MAKE_PATH=$THEOS/makefiles" >> $CM_ENV
           
-          # Build trustcache natively for arm64 to match homebrew libmd architecture
-          echo "Building trustcache for arm64..."
-          cd $HOME
-          git clone https://github.com/CRKatri/trustcache.git
-          cd trustcache
-          make clean
-          make
-          # Store absolute path to trustcache in CM_ENV
-          TRUSTCACHE_PATH="$HOME/trustcache/trustcache"
-          echo "TRUSTCACHE_PATH=$TRUSTCACHE_PATH" >> $CM_ENV
-          echo "✓ trustcache built as arm64 native binary at $TRUSTCACHE_PATH"
-          ls -la "$TRUSTCACHE_PATH" || { echo "ERROR: trustcache binary not found after build"; exit 1; }
-          
           # Override SDK path to use available Xcode SDK
           SDKVERSION=$(xcrun --sdk iphoneos --show-sdk-version)
           echo "SDKVERSION=$SDKVERSION" >> $CM_ENV
@@ -46,19 +33,15 @@ workflows:
       
       - name: Build BaseBin
         script: |
-          # Copy trustcache to build directory where Makefile can find it
-          cp "$TRUSTCACHE_PATH" $CM_BUILD_DIR/BaseBin/
-          export PATH="$CM_BUILD_DIR/BaseBin:$PATH"
-          
-          # Verify trustcache is accessible
-          which trustcache || { echo "ERROR: trustcache not in PATH"; exit 1; }
-          trustcache --version || echo "trustcache ready"
-          
           cd $CM_BUILD_DIR/BaseBin
+          # Use pre-built trustcache binary and add to PATH
+          export PATH="$CM_BUILD_DIR/BaseBin/prebuilt:$PATH"
+          which trustcache || { echo "ERROR: prebuilt trustcache not found"; ls -la prebuilt/; exit 1; }
+          
           # Use pre-built opainject binary to avoid CoreSymbolication framework issues
           mkdir -p .build
           cp prebuilt/opainject .build/opainject
-          # Build everything except opainject (trustcache is now arm64 native, no DYLD workaround needed)
+          # Build everything except opainject
           make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
       - name: Build Packages
