@@ -18,6 +18,11 @@ workflows:
           git clone --recursive https://github.com/theos/theos.git $THEOS
           echo "THEOS=$THEOS" >> $CM_ENV
           echo "THEOS_MAKE_PATH=$THEOS/makefiles" >> $CM_ENV
+          
+          # Override SDK path to use available Xcode SDK
+          SDKVERSION=$(xcrun --sdk iphoneos --show-sdk-version)
+          echo "SDKVERSION=$SDKVERSION" >> $CM_ENV
+          echo "SYSROOT=$(xcrun --sdk iphoneos --show-sdk-path)" >> $CM_ENV
       
       - name: Set COMMIT_HASH if NIGHTLY=1
         script: |
