@@ -26,12 +26,11 @@ workflows:
           cd trustcache
           make clean
           make
-          # Copy trustcache to a location in PATH that's guaranteed to work
-          mkdir -p $HOME/bin
-          cp trustcache $HOME/bin/
-          chmod +x $HOME/bin/trustcache
-          echo "PATH=$HOME/bin:\$PATH" >> $CM_ENV
-          echo "✓ trustcache built as arm64 native binary at $HOME/bin/trustcache"
+          # Store absolute path to trustcache in CM_ENV
+          TRUSTCACHE_PATH="$HOME/trustcache/trustcache"
+          echo "TRUSTCACHE_PATH=$TRUSTCACHE_PATH" >> $CM_ENV
+          echo "✓ trustcache built as arm64 native binary at $TRUSTCACHE_PATH"
+          ls -la "$TRUSTCACHE_PATH" || { echo "ERROR: trustcache binary not found after build"; exit 1; }
           
           # Override SDK path to use available Xcode SDK
           SDKVERSION=$(xcrun --sdk iphoneos --show-sdk-version)
@@ -47,12 +46,13 @@ workflows:
       
       - name: Build BaseBin
         script: |
-          # Explicitly add trustcache location to PATH for this step
-          export PATH="$HOME/bin:$PATH"
+          # Copy trustcache to build directory where Makefile can find it
+          cp "$TRUSTCACHE_PATH" $CM_BUILD_DIR/BaseBin/
+          export PATH="$CM_BUILD_DIR/BaseBin:$PATH"
           
           # Verify trustcache is accessible
-          which trustcache || { echo "ERROR: trustcache not found in PATH"; ls -la $HOME/bin/ || echo "$HOME/bin does not exist"; exit 1; }
-          trustcache --version || echo "trustcache is ready"
+          which trustcache || { echo "ERROR: trustcache not in PATH"; exit 1; }
+          trustcache --version || echo "trustcache ready"
           
           cd $CM_BUILD_DIR/BaseBin
           # Use pre-built opainject binary to avoid CoreSymbolication framework issues
