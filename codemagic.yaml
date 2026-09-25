@@ -34,7 +34,11 @@ workflows:
       - name: Build BaseBin
         script: |
           cd $CM_BUILD_DIR/BaseBin
-          make
+          # Use pre-built opainject binary to avoid CoreSymbolication framework issues
+          mkdir -p .build
+          cp prebuilt/opainject .build/opainject
+          # Build everything except opainject
+          make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
       - name: Build Packages
         script: |
