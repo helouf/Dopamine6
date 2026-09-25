@@ -68,7 +68,15 @@ workflows:
           # This will force the Makefile to use the one we built from source
           rm -f prebuilt/trustcache
           mkdir -p .build
-          make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
+          
+          # Build initial components to populate .include directory
+          make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl
+          
+          # Remove conflicting XPC module map (conflicts with iOS SDK's built-in XPC module)
+          rm -f .include/xpc/module.modulemap
+          
+          # Continue with remaining builds
+          make idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
       - name: Build Packages
         script: |
