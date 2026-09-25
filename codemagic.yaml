@@ -11,7 +11,7 @@ workflows:
     scripts:
       - name: Install dependencies
         script: |
-          brew install ldid
+          brew install ldid libarchive
           
           # Install Theos
           export THEOS=~/theos
