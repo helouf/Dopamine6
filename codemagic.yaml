@@ -19,9 +19,16 @@ workflows:
           echo "THEOS=$THEOS" >> $CM_ENV
           echo "THEOS_MAKE_PATH=$THEOS/makefiles" >> $CM_ENV
           
-          # Install pre-built trustcache binary
-          sudo cp $CM_BUILD_DIR/BaseBin/prebuilt/trustcache /usr/local/bin/
+          # Build trustcache natively for arm64 to match homebrew libmd architecture
+          echo "Building trustcache for arm64..."
+          cd $HOME
+          git clone https://github.com/CRKatri/trustcache.git
+          cd trustcache
+          make clean
+          make
+          sudo cp trustcache /usr/local/bin/
           sudo chmod +x /usr/local/bin/trustcache
+          echo "✓ trustcache built and installed as arm64 native binary"
           
           # Override SDK path to use available Xcode SDK
           SDKVERSION=$(xcrun --sdk iphoneos --show-sdk-version)
@@ -41,9 +48,7 @@ workflows:
           # Use pre-built opainject binary to avoid CoreSymbolication framework issues
           mkdir -p .build
           cp prebuilt/opainject .build/opainject
-          # Set DYLD_FALLBACK_LIBRARY_PATH so trustcache can find libmd
-          export DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/opt/libmd/lib:$DYLD_FALLBACK_LIBRARY_PATH"
-          # Build everything except opainject
+          # Build everything except opainject (trustcache is now arm64 native, no DYLD workaround needed)
           make ChOma XPF MachOMerger libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine basebin.tc dyldhook basebin.tar
       
       - name: Build Packages
