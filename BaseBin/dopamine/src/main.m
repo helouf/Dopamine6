@@ -284,9 +284,17 @@ void finalize_bootstrap_if_needed(bool *finalized)
 	setenv("TERM", "xterm-256color", 1);
 	setenv("SHELL", "/var/69/bin/sh", 1);
 
-	// NOTE: prep_bootstrap.sh is now run BEFORE Sileo installation in DOBootstrapper.m
-	// This ensures package system is initialized before dpkg operations
-	// DO NOT run it here - it would be too late and runs twice
+	if ([[NSFileManager defaultManager] fileExistsAtPath:JBROOT_PATH(@"/prep_bootstrap.sh")]) {
+		printf("Running prep_bootstrap script...\n");
+		int r = exec_cmd_trusted(JBROOT_PATH("/bin/sh"), JBROOT_PATH("/prep_bootstrap.sh"), NULL);
+		if (r != 0) {
+			printf("prep_bootstrap failed: %d\n", r);
+			exit(-1);
+		}
+		else {
+			if (finalized) *finalized = true;
+		}
+	}
 
 	install_builtin_packages();
 
