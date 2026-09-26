@@ -190,8 +190,9 @@ extern char **environ;
             [randomString appendFormat:@"%C", randomCharacter];
         }
         
-        // MODIFIED: Use fixed /var/69 path instead of random dopamine-XXXXXX
-        NSString *jailbreakRootPath = @"/var/69";
+        // MODIFIED: Create preboot directory for palera1n-style jailbreak
+        // The actual jailbreak files go in preboot, /var/69 is just a symlink to it
+        NSString *jailbreakRootPath = [activePrebootPath stringByAppendingPathComponent:@"procursus"];
         
         if (_bootstrapNeedsMigration) {
             NSString *oldRandomizedJailbreakPath = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
