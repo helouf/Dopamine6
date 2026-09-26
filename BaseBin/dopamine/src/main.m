@@ -279,7 +279,6 @@ void finalize_bootstrap_if_needed(bool *finalized)
 	char *pathBackup = getenv("PATH") ? strdup(getenv("PATH")) : NULL;
 	char *shellBackup = getenv("SHELL") ? strdup(getenv("SHELL")) : NULL;
 
-	setenv("NO_PASSWORD_PROMPT", "1", 1);
 	setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/69/sbin:/var/69/bin:/var/69/usr/sbin:/var/69/usr/bin", 1);
 	setenv("TERM", "xterm-256color", 1);
 	setenv("SHELL", "/var/69/bin/sh", 1);
@@ -296,6 +295,7 @@ void finalize_bootstrap_if_needed(bool *finalized)
 		}
 	}
 
+	setenv("NO_PASSWORD_PROMPT", "1", 1);
 	install_builtin_packages();
 
 	unsetenv("NO_PASSWORD_PROMPT");
