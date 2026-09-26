@@ -15,6 +15,7 @@
 #import <sys/mount.h>
 #import <dlfcn.h>
 #import <sys/stat.h>
+#import <spawn.h>
 #import "NSString+Version.h"
 
 #define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.3"
@@ -471,14 +472,58 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (int)installPackage:(NSString *)packagePath
 {
-    if (getuid() == 0) {
-        return exec_cmd_trusted(JBROOT_PATH("/usr/bin/dpkg"), "-i", packagePath.fileSystemRepresentation, NULL);
+    // Use posix_spawn with proper environment setup (like jbinit/palera1n_loader_mod)
+    // This ensures dpkg has access to required libraries and tools
+    
+    const char *dpkgPath = JBROOT_PATH("/usr/bin/dpkg");
+    const char *packagePathC = packagePath.fileSystemRepresentation;
+    
+    // Build argv for dpkg with --force-depends to handle bootstrap environment
+    char *dpkg_argv[] = {
+        "dpkg",
+        "-i",
+        (char *)packagePathC,
+        NULL
+    };
+    
+    // CRITICAL: Set proper environment for dpkg
+    // dpkg needs: sh, rm, tar, diff, dpkg-deb in PATH
+    // Libraries need to be accessible via DYLD_LIBRARY_PATH
+    char *dpkg_env[] = {
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin:" JBROOT_PATH("/usr/bin") ":" JBROOT_PATH("/bin"),
+        "DYLD_LIBRARY_PATH=" JBROOT_PATH("/usr/lib"),
+        "HOME=/var/root",
+        "USER=root",
+        "TMPDIR=/tmp",
+        NULL
+    };
+    
+    pid_t dpkg_pid;
+    int status;
+    
+    // Use posix_spawn instead of exec_cmd_trusted to have full control over environment
+    int spawn_result = posix_spawn(&dpkg_pid, dpkgPath, NULL, NULL, dpkg_argv, dpkg_env);
+    
+    if (spawn_result != 0) {
+        NSLog(@"[Dopamine] posix_spawn dpkg failed: %d - %s", spawn_result, strerror(spawn_result));
+        return spawn_result;
     }
-    else {
-        // idk why but waitpid sometimes fails and this returns -1, so we just ignore the return value
-        exec_cmd(JBROOT_PATH("/basebin/jbctl"), "internal", "install_pkg", packagePath.fileSystemRepresentation, NULL);
-        return 0;
+    
+    // Wait for dpkg to complete
+    if (waitpid(dpkg_pid, &status, 0) == -1) {
+        NSLog(@"[Dopamine] waitpid dpkg failed: %d - %s", errno, strerror(errno));
+        return errno;
     }
+    
+    // Return exit code
+    if (WIFEXITED(status)) {
+        return WEXITSTATUS(status);
+    } else if (WIFSIGNALED(status)) {
+        NSLog(@"[Dopamine] dpkg terminated by signal %d", WTERMSIG(status));
+        return -1;
+    }
+    
+    return 0;
 }
 
 - (int)uninstallPackageWithIdentifier:(NSString *)identifier
