@@ -536,69 +536,15 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 - (int)installSileoWithProperEnvironment
 {
     // ===========================================================================
-    // PHASE 1: INITIALIZE DPKG DATABASE WITH BOOTSTRAP PACKAGES
-    // ===========================================================================
-    // The bootstrap tar.zst extracts with status-old containing all packages
-    // but the status files are empty. We MUST copy status-old to status
-    // before installing ANY packages.
-    // ===========================================================================
-    
-    NSLog(@"[Dopamine] ========== SILEO INSTALLATION VIA DPKG ==========");
-    NSLog(@"[Dopamine] PHASE 1: Initializing dpkg database with bootstrap packages");
-    
-    NSString *statusOldPath = JBROOT_PATH(@"/var/lib/dpkg/status-old");
-    NSString *statusPath = JBROOT_PATH(@"/var/lib/dpkg/status");
-    NSString *libraryStatusPath = JBROOT_PATH(@"/Library/dpkg/status");
-    
-    // Check if status-old exists
-    if ([[NSFileManager defaultManager] fileExistsAtPath:statusOldPath]) {
-        NSError *error = nil;
-        
-        // Copy status-old to main status database
-        if ([[NSFileManager defaultManager] fileExistsAtPath:statusPath]) {
-            [[NSFileManager defaultManager] removeItemAtPath:statusPath error:nil];
-        }
-        [[NSFileManager defaultManager] copyItemAtPath:statusOldPath toPath:statusPath error:&error];
-        
-        if (error) {
-            NSLog(@"[Dopamine] ✗ Failed to copy status-old to status: %@", error);
-        } else {
-            NSLog(@"[Dopamine] ✓ Copied status-old → status (main database initialized)");
-        }
-        
-        // Also copy to Library location
-        NSString *libraryDpkgDir = [libraryStatusPath stringByDeletingLastPathComponent];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:libraryDpkgDir]) {
-            [[NSFileManager defaultManager] createDirectoryAtPath:libraryDpkgDir 
-                                       withIntermediateDirectories:YES 
-                                                        attributes:nil 
-                                                             error:nil];
-        }
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:libraryStatusPath]) {
-            [[NSFileManager defaultManager] removeItemAtPath:libraryStatusPath error:nil];
-        }
-        [[NSFileManager defaultManager] copyItemAtPath:statusOldPath toPath:libraryStatusPath error:&error];
-        
-        if (error) {
-            NSLog(@"[Dopamine] ✗ Failed to copy to Library location: %@", error);
-        } else {
-            NSLog(@"[Dopamine] ✓ Copied status-old → Library/dpkg/status");
-            NSLog(@"[Dopamine] ✓ Both dpkg databases now contain ~67 bootstrap packages");
-        }
-    } else {
-        NSLog(@"[Dopamine] ⚠ status-old not found - database may already be initialized");
-    }
-    
-    // ===========================================================================
-    // PHASE 2: INSTALL SILEO VIA DPKG USING POSIX_SPAWN
+    // INSTALL SILEO VIA DPKG USING POSIX_SPAWN
     // ===========================================================================
     // CRITICAL: Must use posix_spawn() NOT exec_cmd_trusted()
     // posix_spawn() triggers spawn_hook_common() which injects systemhook.dylib
     // and sets up proper jailbreak environment variables
     // ===========================================================================
     
-    NSLog(@"[Dopamine] PHASE 2: Installing Sileo via dpkg (posix_spawn with hook injection)");
+    NSLog(@"[Dopamine] ========== SILEO INSTALLATION VIA DPKG ==========");
+    NSLog(@"[Dopamine] Installing Sileo via dpkg (posix_spawn with hook injection)");
     
     NSString *sileoDebPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"org.coolstar.sileo_2.5.1_iphoneos-arm64.deb"];
     
@@ -849,7 +795,62 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (NSError *)finalizeBootstrap
 {
-    // Initial setup on first jailbreak - run prep_bootstrap.sh if it exists
+    // ===========================================================================
+    // PHASE 1: INITIALIZE DPKG DATABASE (CRITICAL - MUST RUN BEFORE ANYTHING ELSE)
+    // ===========================================================================
+    // The bootstrap tar.zst extracts with status-old containing all ~67 packages
+    // but the status files are EMPTY. Copy status-old → status BEFORE installing.
+    // ===========================================================================
+    [[DOUIManager sharedInstance] sendLog:@"Initializing dpkg database" debug:NO];
+    NSLog(@"[Dopamine] ========== DPKG DATABASE INITIALIZATION ==========");
+    
+    NSString *statusOldPath = JBROOT_PATH(@"/var/lib/dpkg/status-old");
+    NSString *statusPath = JBROOT_PATH(@"/var/lib/dpkg/status");
+    NSString *libraryStatusPath = JBROOT_PATH(@"/Library/dpkg/status");
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:statusOldPath]) {
+        NSError *copyError = nil;
+        
+        // Copy to /var/lib/dpkg/status
+        if ([[NSFileManager defaultManager] fileExistsAtPath:statusPath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:statusPath error:nil];
+        }
+        [[NSFileManager defaultManager] copyItemAtPath:statusOldPath toPath:statusPath error:&copyError];
+        
+        if (copyError) {
+            NSLog(@"[Dopamine] ✗ Failed to initialize main dpkg database: %@", copyError);
+        } else {
+            NSLog(@"[Dopamine] ✓ Copied status-old → /var/lib/dpkg/status");
+        }
+        
+        // Copy to /Library/dpkg/status
+        NSString *libraryDpkgDir = [libraryStatusPath stringByDeletingLastPathComponent];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:libraryDpkgDir]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:libraryDpkgDir 
+                                       withIntermediateDirectories:YES 
+                                                        attributes:nil 
+                                                             error:nil];
+        }
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:libraryStatusPath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:libraryStatusPath error:nil];
+        }
+        [[NSFileManager defaultManager] copyItemAtPath:statusOldPath toPath:libraryStatusPath error:&copyError];
+        
+        if (copyError) {
+            NSLog(@"[Dopamine] ✗ Failed to initialize Library dpkg database: %@", copyError);
+        } else {
+            NSLog(@"[Dopamine] ✓ Copied status-old → /Library/dpkg/status");
+            NSLog(@"[Dopamine] ✓ Both dpkg databases initialized with ~67 bootstrap packages");
+        }
+    } else {
+        NSLog(@"[Dopamine] ⚠ status-old not found - database may already be initialized");
+    }
+    NSLog(@"[Dopamine] =============================================");
+    
+    // ===========================================================================
+    // PHASE 2: RUN prep_bootstrap.sh IF IT EXISTS
+    // ===========================================================================
     if ([[NSFileManager defaultManager] fileExistsAtPath:JBROOT_PATH(@"/prep_bootstrap.sh")]) {
         [[DOUIManager sharedInstance] sendLog:@"Finalizing Bootstrap" debug:NO];
         int r = exec_cmd_trusted(JBROOT_PATH("/bin/sh"), JBROOT_PATH("/prep_bootstrap.sh"), NULL);
@@ -858,8 +859,9 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         }
     }
     
-    // Always check if package managers need to be installed
-    // This handles cases where prep_bootstrap.sh already ran and deleted itself
+    // ===========================================================================
+    // PHASE 3: INSTALL PACKAGE MANAGERS IF NEEDED
+    // ===========================================================================
     NSArray *enabledPackageManagers = [[DOUIManager sharedInstance] enabledPackageManagers];
     BOOL needsPackageManagers = NO;
     for (NSDictionary *packageManagerDict in enabledPackageManagers) {
