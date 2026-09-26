@@ -647,10 +647,6 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     
     NSLog(@"[Dopamine] PHASE 3: Firmware initialization and database sync");
     
-    // Declare paths needed for database sync
-    NSString *statusPath = JBROOT_PATH(@"/var/lib/dpkg/status");
-    NSString *libraryStatusPath = JBROOT_PATH(@"/Library/dpkg/status");
-    
     const char *firmwarePath = JBROOT_PATH("/usr/libexec/firmware");
     
     // Check if firmware binary exists
@@ -799,6 +795,10 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (NSError *)finalizeBootstrap
 {
+    // Declare paths used throughout this method
+    NSString *statusPath = JBROOT_PATH(@"/var/lib/dpkg/status");
+    NSString *libraryStatusPath = JBROOT_PATH(@"/Library/dpkg/status");
+    
     // ===========================================================================
     // PHASE 1: INITIALIZE DPKG DATABASE (CRITICAL - MUST RUN BEFORE ANYTHING ELSE)
     // ===========================================================================
