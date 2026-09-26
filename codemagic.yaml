@@ -10,8 +10,9 @@ workflows:
         - pattern: 'main'
           include: true
       cancel_previous_builds: true
-    environment:
+    cache:
       cache_paths: []
+    environment:
       vars:
         NIGHTLY: "0"
         BUILD_STANDALONE: "0"
