@@ -536,6 +536,72 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 - (int)installSileoWithProperEnvironment
 {
     // ===========================================================================
+    // CRITICAL PRE-INSTALLATION STEP 1: UPDATE SYSTEMHOOK.DYLIB
+    // ===========================================================================
+    // This replicates palera1n's reload_launchd_env() -> load_bootstrapped_jailbreak_env()
+    // Updates JB_RootPath in systemhook.dylib so spawned processes find libraries
+    // ===========================================================================
+    
+    NSLog(@"[Dopamine] ========================================");
+    NSLog(@"[Dopamine] PRE-INSTALLATION STEPS (palera1n approach)");
+    NSLog(@"[Dopamine] ========================================");
+    NSLog(@"[Dopamine] PRE-STEP 1: Updating systemhook.dylib JB_RootPath");
+    
+    void *systemhook_handle = dlopen(JBROOT_PATH("/usr/lib/systemhook.dylib"), RTLD_NOW);
+    if (systemhook_handle) {
+        char **pJB_RootPath = dlsym(systemhook_handle, "JB_RootPath");
+        if (pJB_RootPath) {
+            char *jbPath = JBROOT_PATH("");
+            setenv("JB_ROOT_PATH", jbPath, 1);
+            char *old_rootPath = *pJB_RootPath;
+            *pJB_RootPath = strdup(jbPath);
+            if (old_rootPath) free(old_rootPath);
+            NSLog(@"[Dopamine] ✓ Updated systemhook.dylib JB_RootPath to: %s", jbPath);
+        } else {
+            NSLog(@"[Dopamine] ⚠ Could not find JB_RootPath symbol in systemhook.dylib");
+        }
+        dlclose(systemhook_handle);
+    } else {
+        NSLog(@"[Dopamine] ✗ Failed to open systemhook.dylib: %s", dlerror());
+    }
+    
+    // ===========================================================================
+    // CRITICAL PRE-INSTALLATION STEP 2: RUN PREP_BOOTSTRAP.SH
+    // ===========================================================================
+    // This initializes the package system BEFORE dpkg runs:
+    // - Runs firmware binary (generates virtual packages)
+    // - Runs postinst scripts of core packages (apt, debianutils, dash, etc.)
+    // - Initializes dpkg triggers and APT configuration
+    // ===========================================================================
+    
+    NSLog(@"[Dopamine] PRE-STEP 2: Running prep_bootstrap.sh");
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:JBROOT_PATH(@"/prep_bootstrap.sh")]) {
+        setenv("NO_PASSWORD_PROMPT", "1", 1);
+        setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/69/sbin:/var/69/bin:/var/69/usr/sbin:/var/69/usr/bin", 1);
+        setenv("TERM", "xterm-256color", 1);
+        
+        int prep_result = exec_cmd_trusted(JBROOT_PATH("/bin/sh"), JBROOT_PATH("/prep_bootstrap.sh"), NULL);
+        
+        unsetenv("NO_PASSWORD_PROMPT");
+        unsetenv("TERM");
+        
+        if (prep_result != 0) {
+            NSLog(@"[Dopamine] ✗ prep_bootstrap.sh failed: %d", prep_result);
+            NSLog(@"[Dopamine] This may cause dpkg operations to fail!");
+        } else {
+            NSLog(@"[Dopamine] ✓ prep_bootstrap.sh completed successfully");
+            NSLog(@"[Dopamine] ✓ Package system initialized - dpkg is now ready");
+        }
+    } else {
+        NSLog(@"[Dopamine] ⚠ prep_bootstrap.sh not found (may already be finalized)");
+    }
+    
+    NSLog(@"[Dopamine] ========================================");
+    NSLog(@"[Dopamine] Environment ready - proceeding to Sileo installation");
+    NSLog(@"[Dopamine] ========================================");
+    
+    // ===========================================================================
     // PHASE 1: INITIALIZE DPKG DATABASE WITH BOOTSTRAP PACKAGES
     // ===========================================================================
     // The bootstrap tar.zst extracts with status-old containing all packages
