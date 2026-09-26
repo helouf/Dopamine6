@@ -3,7 +3,15 @@ workflows:
     name: Dopamine Build
     max_build_duration: 120
     instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+      cancel_previous_builds: true
     environment:
+      cache_paths: []
       vars:
         NIGHTLY: "0"
         BUILD_STANDALONE: "0"
