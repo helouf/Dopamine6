@@ -489,9 +489,16 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     // CRITICAL: Set proper environment for dpkg
     // dpkg needs: sh, rm, tar, diff, dpkg-deb in PATH
     // Libraries need to be accessible via DYLD_LIBRARY_PATH
+    // Build PATH and DYLD_LIBRARY_PATH strings at runtime
+    static char path_env[512];
+    static char dyld_env[512];
+    snprintf(path_env, sizeof(path_env), "PATH=/usr/bin:/bin:/usr/sbin:/sbin:%s:%s", 
+             JBROOT_PATH("/usr/bin"), JBROOT_PATH("/bin"));
+    snprintf(dyld_env, sizeof(dyld_env), "DYLD_LIBRARY_PATH=%s", JBROOT_PATH("/usr/lib"));
+    
     char *dpkg_env[] = {
-        "PATH=/usr/bin:/bin:/usr/sbin:/sbin:" JBROOT_PATH("/usr/bin") ":" JBROOT_PATH("/bin"),
-        "DYLD_LIBRARY_PATH=" JBROOT_PATH("/usr/lib"),
+        path_env,
+        dyld_env,
         "HOME=/var/root",
         "USER=root",
         "TMPDIR=/tmp",
