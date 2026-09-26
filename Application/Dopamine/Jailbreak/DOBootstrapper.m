@@ -535,6 +535,10 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (int)installSileoWithProperEnvironment
 {
+    // Declare paths used throughout this method
+    NSString *statusPath = JBROOT_PATH(@"/var/lib/dpkg/status");
+    NSString *libraryStatusPath = JBROOT_PATH(@"/Library/dpkg/status");
+    
     // ===========================================================================
     // INSTALL SILEO VIA DPKG USING POSIX_SPAWN
     // ===========================================================================
