@@ -90,6 +90,12 @@ workflows:
           cd $CM_BUILD_DIR/Packages
           make
       
+      - name: Download Bootstrap Files
+        script: |
+          cd $CM_BUILD_DIR/Application/Dopamine/Resources
+          chmod +x download_bootstraps.sh
+          ./download_bootstraps.sh
+      
       - name: Build Application
         script: |
           cd $CM_BUILD_DIR/Application
