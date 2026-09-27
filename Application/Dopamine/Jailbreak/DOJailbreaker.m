@@ -612,6 +612,30 @@ void *boomerang_server(struct boomerang_info *info)
     *errOut = [self elevatePrivileges];
 
     if (*errOut) return;
+    
+    // Check if bootstrap is already installed - skip all non-kernel setup steps
+    BOOL bootstrapAlreadyInstalled = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/69/.installed_dopamine"];
+    
+    if (bootstrapAlreadyInstalled) {
+        [[DOUIManager sharedInstance] sendLog:@"Bootstrap Already Installed - Skipping All Setup Steps (Kernel Exploit Only)" debug:NO];
+        
+        // Only inject launchd hook (kernel primitive injection) - REQUIRED for jailbreak to function
+        [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Initializing Environment") debug:NO];
+        *errOut = [self injectLaunchdHook];
+        if (*errOut) {
+            [self cleanUpPostExploitation];
+            return;
+        }
+        
+        // Set jailbroken status
+        [[DOEnvironmentManager sharedManager] setJailbroken:YES withVersion:[NSString stringWithContentsOfFile:JBROOT_PATH(@"/basebin/.version") encoding:NSUTF8StringEncoding error:nil]];
+        
+        // Cleanup and exit - skip all other setup
+        *errOut = [self cleanUpPostExploitation];
+        printf("Done!\n");
+        return;
+    }
+    
     *errOut = [self showNonDefaultSystemApps];
     if (*errOut) {
         [self cleanUpPostExploitation];
