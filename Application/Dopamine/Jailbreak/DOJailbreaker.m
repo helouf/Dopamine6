@@ -619,14 +619,7 @@ void *boomerang_server(struct boomerang_info *info)
     if (bootstrapAlreadyInstalled) {
         [[DOUIManager sharedInstance] sendLog:@"Bootstrap Already Installed - Skipping Extraction" debug:NO];
         
-        // Still need to set up jailbreak root path
-        *errOut = [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
-        if (*errOut) {
-            [self cleanUpPostExploitation];
-            return;
-        }
-        
-        // Set up environment variables
+        // Set up environment variables (will be re-set after prepareBootstrap anyway)
         setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/69/sbin:/var/69/bin:/var/69/usr/sbin:/var/69/usr/bin", 1);
         setenv("TERM", "xterm-256color", 1);
         
