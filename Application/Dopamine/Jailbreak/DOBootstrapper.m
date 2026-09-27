@@ -267,6 +267,8 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 {
     [[DOUIManager sharedInstance] sendLog:@"Updating BaseBin" debug:NO];
 
+    NSError *error = nil;
+    
     // Ensure /private/preboot is mounted writable (Not writable by default on iOS <=15)
     error = [self ensurePrivatePrebootIsWritable];
     if (error) {
