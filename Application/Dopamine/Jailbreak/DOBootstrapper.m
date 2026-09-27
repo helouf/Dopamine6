@@ -265,6 +265,13 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion
 {
+    // Always update /var/69 symlink first (might not exist after reboot)
+    NSError *error = [self updateVarJbSymlink];
+    if (error) {
+        completion(error);
+        return;
+    }
+    
     // Check the EXACT marker file at /var/69/.installed_dopamine
     NSString *installedMarkerPath = @"/var/69/.installed_dopamine";
     
@@ -342,11 +349,6 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     }
     
     NSString *basebinPath = JBROOT_PATH(@"/basebin");
-    error = [self updateVarJbSymlink];
-    if (error) {
-        completion(error);
-        return;
-    }
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
         if (![[NSFileManager defaultManager] removeItemAtPath:basebinPath error:&error]) {
