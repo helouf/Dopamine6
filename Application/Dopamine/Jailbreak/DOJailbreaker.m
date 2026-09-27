@@ -646,11 +646,18 @@ void *boomerang_server(struct boomerang_info *info)
         [[NSData data] writeToFile:JBROOT_PATH(@"/basebin/.safe_mode") atomically:YES];
     }
     
-    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Loading BaseBin TrustCache") debug:NO];
-    *errOut = [self loadBasebinTrustcache];
-    if (*errOut) {
-        [self cleanUpPostExploitation];
-        return;
+    // Check if bootstrap is already installed - if so, trustcache is already loaded
+    BOOL bootstrapAlreadyInstalled = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/69/.installed_dopamine"];
+    
+    if (bootstrapAlreadyInstalled) {
+        [[DOUIManager sharedInstance] sendLog:@"BaseBin TrustCache Already Loaded - Skipping" debug:NO];
+    } else {
+        [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Loading BaseBin TrustCache") debug:NO];
+        *errOut = [self loadBasebinTrustcache];
+        if (*errOut) {
+            [self cleanUpPostExploitation];
+            return;
+        }
     }
 
     if (removeJailbreakEnabled) {
