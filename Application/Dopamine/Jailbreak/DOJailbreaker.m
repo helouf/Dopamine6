@@ -613,26 +613,6 @@ void *boomerang_server(struct boomerang_info *info)
 
     if (*errOut) return;
     
-    // Check if bootstrap is already installed - skip bootstrap extraction and setup
-    BOOL bootstrapAlreadyInstalled = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/69/.installed_dopamine"];
-    
-    if (bootstrapAlreadyInstalled) {
-        [[DOUIManager sharedInstance] sendLog:@"Bootstrap Already Installed - Skipping Extraction" debug:NO];
-        
-        // Set up environment variables (will be re-set after prepareBootstrap anyway)
-        setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/69/sbin:/var/69/bin:/var/69/usr/sbin:/var/69/usr/bin", 1);
-        setenv("TERM", "xterm-256color", 1);
-        
-        // Handle safe mode marker
-        if (!tweaksEnabled) {
-            printf("Creating safe mode marker file since tweaks were disabled in settings\n");
-            [[NSData data] writeToFile:JBROOT_PATH(@"/basebin/.safe_mode") atomically:YES];
-        }
-        
-        // Jump to post-bootstrap steps (skip extraction, trustcache load, etc.)
-        goto skip_bootstrap_setup;
-    }
-    
     *errOut = [self showNonDefaultSystemApps];
     if (*errOut) {
         [self cleanUpPostExploitation];
@@ -666,20 +646,14 @@ void *boomerang_server(struct boomerang_info *info)
         printf("Creating safe mode marker file since tweaks were disabled in settings\n");
         [[NSData data] writeToFile:JBROOT_PATH(@"/basebin/.safe_mode") atomically:YES];
     }
-    
-    // Check if bootstrap is already installed - if so, trustcache is already loaded
-    if (bootstrapAlreadyInstalled) {
-        [[DOUIManager sharedInstance] sendLog:@"BaseBin TrustCache Already Loaded - Skipping" debug:NO];
-    } else {
-        [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Loading BaseBin TrustCache") debug:NO];
-        *errOut = [self loadBasebinTrustcache];
-        if (*errOut) {
-            [self cleanUpPostExploitation];
-            return;
-        }
-    }
 
-skip_bootstrap_setup:
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Loading BaseBin TrustCache") debug:NO];
+    *errOut = [self loadBasebinTrustcache];
+    if (*errOut) {
+        [self cleanUpPostExploitation];
+        return;
+    }
+    
     if (removeJailbreakEnabled) {
         *errOut = [self removeJailbreak];
         [self cleanUpPostExploitation];
