@@ -338,7 +338,10 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         return;
     }
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
+    // Skip basebin update if already bootstrapped (prevents extraction errors on re-jailbreak)
+    BOOL alreadyBootstrapped = [[NSFileManager defaultManager] fileExistsAtPath:installedPath];
+    
+    if (!alreadyBootstrapped && [[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
         if (![[NSFileManager defaultManager] removeItemAtPath:basebinPath error:&error]) {
             BOOL recovered = NO;
 
@@ -379,12 +382,16 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
             }
         }
     }
-    error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tar"] toPath:JBROOT_PATH(@"/")];
-    if (error) {
-        completion(error);
-        return;
+    
+    // Only extract basebin if not already bootstrapped
+    if (!alreadyBootstrapped) {
+        error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tar"] toPath:JBROOT_PATH(@"/")];
+        if (error) {
+            completion(error);
+            return;
+        }
+        [self patchBasebinDaemonPlists];
     }
-    [self patchBasebinDaemonPlists];
     
     void (^bootstrapFinishedCompletion)(NSError *) = ^(NSError *error){
         if (error) {
