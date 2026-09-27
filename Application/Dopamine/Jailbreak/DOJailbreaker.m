@@ -613,27 +613,31 @@ void *boomerang_server(struct boomerang_info *info)
 
     if (*errOut) return;
     
-    // Check if bootstrap is already installed - skip all non-kernel setup steps
+    // Check if bootstrap is already installed - skip bootstrap extraction and setup
     BOOL bootstrapAlreadyInstalled = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/69/.installed_dopamine"];
     
     if (bootstrapAlreadyInstalled) {
-        [[DOUIManager sharedInstance] sendLog:@"Bootstrap Already Installed - Skipping All Setup Steps (Kernel Exploit Only)" debug:NO];
+        [[DOUIManager sharedInstance] sendLog:@"Bootstrap Already Installed - Skipping Extraction" debug:NO];
         
-        // Only inject launchd hook (kernel primitive injection) - REQUIRED for jailbreak to function
-        [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Initializing Environment") debug:NO];
-        *errOut = [self injectLaunchdHook];
+        // Still need to set up jailbreak root path
+        *errOut = [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
         if (*errOut) {
             [self cleanUpPostExploitation];
             return;
         }
         
-        // Set jailbroken status
-        [[DOEnvironmentManager sharedManager] setJailbroken:YES withVersion:[NSString stringWithContentsOfFile:JBROOT_PATH(@"/basebin/.version") encoding:NSUTF8StringEncoding error:nil]];
+        // Set up environment variables
+        setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/69/sbin:/var/69/bin:/var/69/usr/sbin:/var/69/usr/bin", 1);
+        setenv("TERM", "xterm-256color", 1);
         
-        // Cleanup and exit - skip all other setup
-        *errOut = [self cleanUpPostExploitation];
-        printf("Done!\n");
-        return;
+        // Handle safe mode marker
+        if (!tweaksEnabled) {
+            printf("Creating safe mode marker file since tweaks were disabled in settings\n");
+            [[NSData data] writeToFile:JBROOT_PATH(@"/basebin/.safe_mode") atomically:YES];
+        }
+        
+        // Jump to post-bootstrap steps (skip extraction, trustcache load, etc.)
+        goto skip_bootstrap_setup;
     }
     
     *errOut = [self showNonDefaultSystemApps];
@@ -682,6 +686,7 @@ void *boomerang_server(struct boomerang_info *info)
         }
     }
 
+skip_bootstrap_setup:
     if (removeJailbreakEnabled) {
         *errOut = [self removeJailbreak];
         [self cleanUpPostExploitation];
