@@ -240,7 +240,8 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         return;
     }
     
-    [[NSData data] writeToFile:JBROOT_PATH(@"/.installed_dopamine") atomically:YES];
+    // Create the marker file at the EXACT path /var/69/.installed_dopamine
+    [[NSData data] writeToFile:@"/var/69/.installed_dopamine" atomically:YES];
     completion(nil);
 }
 
@@ -264,26 +265,12 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion
 {
-    NSString *basebinPath = JBROOT_PATH(@"/basebin");
-    NSString *basebinVersionPath = JBROOT_PATH(@"/basebin/.version");
-    NSString *basebinDopaminePath = JBROOT_PATH(@"/basebin/dopamine");
-    NSString *bootstrapEtcPath = JBROOT_PATH(@"/etc");
+    // Check the EXACT marker file at /var/69/.installed_dopamine
+    NSString *installedMarkerPath = @"/var/69/.installed_dopamine";
     
-    // Skip entire basebin update if already bootstrapped
-    // Check if basebin AND bootstrap are installed by checking key files
-    BOOL basebinInstalled = [[NSFileManager defaultManager] fileExistsAtPath:basebinVersionPath] && 
-                            [[NSFileManager defaultManager] fileExistsAtPath:basebinDopaminePath];
-    BOOL bootstrapInstalled = [[NSFileManager defaultManager] fileExistsAtPath:bootstrapEtcPath];
-    
-    if (basebinInstalled && bootstrapInstalled) {
-        [[DOUIManager sharedInstance] sendLog:@"BaseBin & Bootstrap Already Installed - Skipping" debug:NO];
-        
-        // Create marker file if it doesn't exist
-        NSString *installedMarker = JBROOT_PATH(@"/.installed_dopamine");
-        if (![[NSFileManager defaultManager] fileExistsAtPath:installedMarker]) {
-            [[NSData data] writeToFile:installedMarker atomically:YES];
-        }
-        
+    BOOL alreadyBootstrapped = [[NSFileManager defaultManager] fileExistsAtPath:installedMarkerPath];
+    if (alreadyBootstrapped) {
+        [[DOUIManager sharedInstance] sendLog:@"Bootstrap Already Installed (Marker Found) - Skipping" debug:NO];
         completion(nil);
         return;
     }
