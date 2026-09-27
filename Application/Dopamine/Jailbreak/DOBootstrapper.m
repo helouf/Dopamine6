@@ -950,17 +950,13 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     NSError *error = [self ensurePrivatePrebootIsWritable];
     if (error) return error;
     
-    // Delete from preboot first (the writable location)
+    // Delete from preboot (the writable location where jailbreak files are actually stored)
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if (error) return error;
     
-    // Use posix_spawn to remove /var/69 with elevated privileges
-    pid_t pid;
-    const char *args[] = {"/bin/rm", "-rf", "/var/69", NULL};
-    posix_spawn(&pid, "/bin/rm", NULL, NULL, (char *const *)args, NULL);
-    int status;
-    waitpid(pid, &status, 0);
+    // Note: /var/69 is just a bind mount to preboot, no need to explicitly delete it
+    // It will be automatically cleaned up on next reboot when jailbreak hooks aren't active
     
     return nil;
 }
