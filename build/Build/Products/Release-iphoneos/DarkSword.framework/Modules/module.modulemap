@@ -1,0 +1,6 @@
+framework module DarkSword {
+  umbrella header "DarkSword.h"
+
+  export *
+  module * { export * }
+}

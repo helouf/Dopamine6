@@ -264,6 +264,16 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion
 {
+    NSString *installedPath = JBROOT_PATH(@"/.installed_dopamine");
+    
+    // Skip entire basebin update if already bootstrapped
+    BOOL alreadyBootstrapped = [[NSFileManager defaultManager] fileExistsAtPath:installedPath];
+    if (alreadyBootstrapped) {
+        [[DOUIManager sharedInstance] sendLog:@"BaseBin Already Installed - Skipping Update" debug:NO];
+        completion(nil);
+        return;
+    }
+    
     [[DOUIManager sharedInstance] sendLog:@"Updating BaseBin" debug:NO];
 
     // Ensure /private/preboot is mounted writable (Not writable by default on iOS <=15)
@@ -331,17 +341,13 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     }
     
     NSString *basebinPath = JBROOT_PATH(@"/basebin");
-    NSString *installedPath = JBROOT_PATH(@"/.installed_dopamine");
     error = [self updateVarJbSymlink];
     if (error) {
         completion(error);
         return;
     }
     
-    // Skip basebin update if already bootstrapped (prevents extraction errors on re-jailbreak)
-    BOOL alreadyBootstrapped = [[NSFileManager defaultManager] fileExistsAtPath:installedPath];
-    
-    if (!alreadyBootstrapped && [[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
         if (![[NSFileManager defaultManager] removeItemAtPath:basebinPath error:&error]) {
             BOOL recovered = NO;
 
@@ -382,16 +388,12 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
             }
         }
     }
-    
-    // Only extract basebin if not already bootstrapped
-    if (!alreadyBootstrapped) {
-        error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tar"] toPath:JBROOT_PATH(@"/")];
-        if (error) {
-            completion(error);
-            return;
-        }
-        [self patchBasebinDaemonPlists];
+    error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tar"] toPath:JBROOT_PATH(@"/")];
+    if (error) {
+        completion(error);
+        return;
     }
+    [self patchBasebinDaemonPlists];
     
     void (^bootstrapFinishedCompletion)(NSError *) = ^(NSError *error){
         if (error) {
@@ -436,27 +438,26 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     };
     
     
-    BOOL needsBootstrap = ![[NSFileManager defaultManager] fileExistsAtPath:installedPath];
-    if (needsBootstrap) {
-        // First, wipe any existing content that's not basebin
-        for (NSURL *subItemURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:JBROOT_PATH(@"/")] includingPropertiesForKeys:nil options:0 error:nil]) {
-            if (![subItemURL.lastPathComponent isEqualToString:@"basebin"]) {
-                [[NSFileManager defaultManager] removeItemAtURL:subItemURL error:nil];
-            }
+    // needsBootstrap is always TRUE here because we return early if already bootstrapped
+    // First, wipe any existing content that's not basebin
+    for (NSURL *subItemURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:JBROOT_PATH(@"/")] includingPropertiesForKeys:nil options:0 error:nil]) {
+        if (![subItemURL.lastPathComponent isEqualToString:@"basebin"]) {
+            [[NSFileManager defaultManager] removeItemAtURL:subItemURL error:nil];
         }
-        
-        /*void (^bootstrapDownloadCompletion)(NSString *, NSError *) = ^(NSString *path, NSError *error) {
-            if (error) {
-                completion(error);
-                return;
-            }
-            [self extractBootstrap:path withCompletion:bootstrapFinishedCompletion];
-        };*/
-        
-        [[DOUIManager sharedInstance] sendLog:@"Extracting Bootstrap" debug:NO];
+    }
+    
+    /*void (^bootstrapDownloadCompletion)(NSString *, NSError *) = ^(NSString *path, NSError *error) {
+        if (error) {
+            completion(error);
+            return;
+        }
+        [self extractBootstrap:path withCompletion:bootstrapFinishedCompletion];
+    };*/
+    
+    [[DOUIManager sharedInstance] sendLog:@"Extracting Bootstrap" debug:NO];
 
-        NSString *bootstrapZstdPath = [NSString stringWithFormat:@"%@/bootstrap_%@.tar.zst", [NSBundle mainBundle].bundlePath, [self bootstrapVersion]];
-        [self extractBootstrap:bootstrapZstdPath withCompletion:bootstrapFinishedCompletion];
+    NSString *bootstrapZstdPath = [NSString stringWithFormat:@"%@/bootstrap_%@.tar.zst", [NSBundle mainBundle].bundlePath, [self bootstrapVersion]];
+    [self extractBootstrap:bootstrapZstdPath withCompletion:bootstrapFinishedCompletion];
 
         /*NSString *documentsCandidate = @"/var/mobile/Documents/bootstrap.tar.zstd";
         NSString *bundleCandidate = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"bootstrap.tar.zstd"];
@@ -471,10 +472,6 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
             [[DOUIManager sharedInstance] sendLog:@"Downloading Bootstrap" debug:NO];
             [self downloadBootstrapWithCompletion:bootstrapDownloadCompletion];
         }*/
-    }
-    else {
-        bootstrapFinishedCompletion(nil);
-    }
 }
 
 - (int)installPackage:(NSString *)packagePath

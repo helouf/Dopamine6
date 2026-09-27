@@ -1,0 +1,27 @@
+dependencies: \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/cover.c \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/module.modulemap \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/../common/debug.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/../common/mem.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/compiler.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/portability_macros.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/debug.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/zstd_deps.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/../common/pool.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/../zstd.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/zstd_errors.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/../common/threading.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/../common/zstd_internal.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/cpu.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/mem.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/error_private.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/../zstd_errors.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/fse.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/bitstream.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/bits.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/huf.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/xxhash.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/common/zstd_trace.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/../common/bits.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/../zdict.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/dictBuilder/cover.h

@@ -1,0 +1,26 @@
+dependencies: \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/zstd_decompress.c \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/module.modulemap \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/zstd_deps.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/allocations.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/compiler.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/portability_macros.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/../zstd.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/zstd_errors.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/bmi2.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/error_private.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/../zstd_errors.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/debug.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/zstd_internal.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/cpu.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/mem.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/fse.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/bitstream.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/bits.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/huf.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/xxhash.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../common/zstd_trace.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/zstd_decompress_internal.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/zstd_ddict.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/../zstd.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/SourcePackages/checkouts/zstd/lib/decompress/zstd_decompress_block.h

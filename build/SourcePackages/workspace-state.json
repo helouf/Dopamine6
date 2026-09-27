@@ -1,0 +1,27 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "zstd",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/facebook/zstd.git",
+          "name" : "zstd"
+        },
+        "state" : {
+          "checkoutState" : {
+            "branch" : "dev",
+            "revision" : "01b7154f1172432f8abe9b3bb9909e14a1176b7d"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "zstd"
+      }
+    ]
+  },
+  "version" : 5
+}

@@ -1,0 +1,6 @@
+framework module kfd {
+  umbrella header "kfd.h"
+
+  export *
+  module * { export * }
+}

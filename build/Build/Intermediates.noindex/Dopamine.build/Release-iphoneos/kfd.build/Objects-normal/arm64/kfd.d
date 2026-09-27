@@ -1,0 +1,25 @@
+dependencies: \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/kfd.m \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/build/Build/Intermediates.noindex/Dopamine.build/Release-iphoneos/kfd.build/module.modulemap \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/common.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/info.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/info/dynamic_info.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/info/static_info.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/puaf.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/puaf/landa.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/puaf/physpuppet.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/puaf/smith.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kread/kread_kqueue_workloop_ctl.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kread/kread_sem_open.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kread/kread_IOSurface.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kread/../IOSurface_shared.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/xpc/module.modulemap \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kwrite/kwrite_dup.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kwrite/kwrite_sem_open.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kwrite/kwrite_IOSurface.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/krkw/kwrite/../kread/kread_IOSurface.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/kfd/Exploit/libkfd/perf.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/info.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/primitives_external.h

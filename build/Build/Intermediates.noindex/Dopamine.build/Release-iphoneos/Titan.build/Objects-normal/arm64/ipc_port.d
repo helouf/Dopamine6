@@ -1,0 +1,35 @@
+dependencies: \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/Titan/exploit/ipc_port.c \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/Titan/exploit/ipc_port.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/Titan/exploit/info.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/Titan/exploit/titan.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/Application/Dopamine/Exploits/Titan/exploit/offsets.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/libjailbreak.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/primitives.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/primitives_external.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/info.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/xpc/module.modulemap \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/kernel.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/pvh.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/util.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/jbclient_xpc.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/xpc_private.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/signatures.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/CodeDirectory.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/MachO.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/MemoryStream.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/Fat.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/DyldSharedCache.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/dyld_cache_format.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/fixup-chains.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/CachePatching.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/CSBlob.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/MachOByteOrder.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/MachOLoadCommand.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/choma/FileStream.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/jbroot.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/translation.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/pte.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/trustcache.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/trustcache_structs.h \
+  /Users/dycklarak/Downloads/palera1n_var_69/Dopamine-3.0.10/BaseBin/.include/libjailbreak/stock_fixes.h
