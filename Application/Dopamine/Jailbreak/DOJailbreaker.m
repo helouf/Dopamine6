@@ -671,8 +671,6 @@ void *boomerang_server(struct boomerang_info *info)
     }
     
     // Check if bootstrap is already installed - if so, trustcache is already loaded
-    BOOL bootstrapAlreadyInstalled = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/69/.installed_dopamine"];
-    
     if (bootstrapAlreadyInstalled) {
         [[DOUIManager sharedInstance] sendLog:@"BaseBin TrustCache Already Loaded - Skipping" debug:NO];
     } else {
