@@ -948,11 +948,16 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 {
     NSError *error = [self ensurePrivatePrebootIsWritable];
     if (error) return error;
+    
+    // Delete from preboot first (the writable location)
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if (error) return error;
-    [[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:nil];
-    return error;
+    
+    // Use jbclient for /var/69 removal since it requires root and bypasses read-only protection
+    jbclient_root_delete_file("/var/69");
+    
+    return nil;
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
