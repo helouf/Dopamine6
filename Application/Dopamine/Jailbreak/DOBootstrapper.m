@@ -949,16 +949,11 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 {
     NSError *error = [self ensurePrivatePrebootIsWritable];
     if (error) return error;
-    
-    // Delete from preboot (the writable location where jailbreak files are actually stored)
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if (error) return error;
-    
-    // Note: /var/69 is just a bind mount to preboot, no need to explicitly delete it
-    // It will be automatically cleaned up on next reboot when jailbreak hooks aren't active
-    
-    return nil;
+    [[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:nil];
+    return error;
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite

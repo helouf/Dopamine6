@@ -140,8 +140,8 @@ extern char **environ;
             }
         }
         
-        // MODIFIED: Use fixed /var/69 path
-        NSString *jailbreakRootPath = @"/var/69";
+        // MODIFIED: Use fixed /var/69 path for runtime but store preboot path
+        NSString *jailbreakRootPath = [activePrebootPath stringByAppendingPathComponent:@"procursus"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
             // This attribute serves as the primary source of what the root path is
             // Anything else in the jailbreak will get it from here
