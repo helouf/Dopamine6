@@ -264,12 +264,26 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion
 {
-    NSString *installedPath = JBROOT_PATH(@"/.installed_dopamine");
+    NSString *basebinPath = JBROOT_PATH(@"/basebin");
+    NSString *basebinVersionPath = JBROOT_PATH(@"/basebin/.version");
+    NSString *basebinDopaminePath = JBROOT_PATH(@"/basebin/dopamine");
+    NSString *bootstrapEtcPath = JBROOT_PATH(@"/etc");
     
     // Skip entire basebin update if already bootstrapped
-    BOOL alreadyBootstrapped = [[NSFileManager defaultManager] fileExistsAtPath:installedPath];
-    if (alreadyBootstrapped) {
-        [[DOUIManager sharedInstance] sendLog:@"BaseBin Already Installed - Skipping Update" debug:NO];
+    // Check if basebin AND bootstrap are installed by checking key files
+    BOOL basebinInstalled = [[NSFileManager defaultManager] fileExistsAtPath:basebinVersionPath] && 
+                            [[NSFileManager defaultManager] fileExistsAtPath:basebinDopaminePath];
+    BOOL bootstrapInstalled = [[NSFileManager defaultManager] fileExistsAtPath:bootstrapEtcPath];
+    
+    if (basebinInstalled && bootstrapInstalled) {
+        [[DOUIManager sharedInstance] sendLog:@"BaseBin & Bootstrap Already Installed - Skipping" debug:NO];
+        
+        // Create marker file if it doesn't exist
+        NSString *installedMarker = JBROOT_PATH(@"/.installed_dopamine");
+        if (![[NSFileManager defaultManager] fileExistsAtPath:installedMarker]) {
+            [[NSData data] writeToFile:installedMarker atomically:YES];
+        }
+        
         completion(nil);
         return;
     }
