@@ -11,4 +11,5 @@ Application/Payload
 .idea
 Tools/fastPathSign/.build_*
 Exploits/kfd/kfd.framework/kfd
-.signbuild/SourcePackages/checkouts/zstd
+.sign
+build/SourcePackages/checkouts/
