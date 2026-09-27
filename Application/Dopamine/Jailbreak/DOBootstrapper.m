@@ -16,6 +16,7 @@
 #import <dlfcn.h>
 #import <sys/stat.h>
 #import <spawn.h>
+#import <sys/wait.h>
 #import "NSString+Version.h"
 
 #define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.3"
@@ -954,8 +955,12 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if (error) return error;
     
-    // Use jbclient for /var/69 removal since it requires root and bypasses read-only protection
-    jbclient_root_delete_file("/var/69");
+    // Use posix_spawn to remove /var/69 with elevated privileges
+    pid_t pid;
+    const char *args[] = {"/bin/rm", "-rf", "/var/69", NULL};
+    posix_spawn(&pid, "/bin/rm", NULL, NULL, (char *const *)args, NULL);
+    int status;
+    waitpid(pid, &status, 0);
     
     return nil;
 }
