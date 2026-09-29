@@ -635,7 +635,7 @@ extern char **environ;
 
 - (BOOL)isJailbreakHidden
 {
-    return ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/69"];
+    return ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"];
 }
 
 - (void)setJailbreakHidden:(BOOL)hidden
@@ -655,7 +655,7 @@ extern char **environ;
                     [self setFakelibMounted:NO];
                     jbclient_platform_set_systemwide_domain_enabled(false);
                 }
-                [[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:nil];
+                [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
             }
             else {
                 [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/69" withDestinationPath:JBROOT_PATH(@"/") error:nil];

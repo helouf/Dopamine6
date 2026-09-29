@@ -946,7 +946,7 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if (error) return error;
-    [[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
     return error;
 }
 
