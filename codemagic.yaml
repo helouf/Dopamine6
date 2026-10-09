@@ -88,6 +88,9 @@ workflows:
       - name: Build Packages
         script: |
           cd $CM_BUILD_DIR/Packages
+          # Clean any prebuilt .deb files to force rebuild from source
+          make clean
+          # Build packages from source with /var/69 paths
           make
       
       - name: Build Application
