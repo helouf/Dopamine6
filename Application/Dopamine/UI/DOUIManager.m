@@ -31,6 +31,15 @@
         _preferenceManager = [DOPreferenceManager sharedManager];
         _logRecord = [NSMutableArray new];
         _logLock = [NSLock new];
+        
+        // Initialize persistent log file
+        NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/dopamine_jailbreak.log"];
+        NSString *timestamp = [NSString stringWithFormat:@"\n\n=== Dopamine Jailbreak Log - %@ ===\n", [NSDate date]];
+        [timestamp writeToFile:logPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        
+        // Set permissions to allow reading in Filza
+        NSDictionary *attrs = @{NSFilePosixPermissions: @(0644)};
+        [[NSFileManager defaultManager] setAttributes:attrs ofItemAtPath:logPath error:nil];
     }
     return self;
 }
@@ -207,6 +216,23 @@
 
 - (void)sendLog:(NSString*)log debug:(BOOL)debug update:(BOOL)update
 {
+    // Write to persistent log file FIRST (even if UI is not ready)
+    NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/dopamine_jailbreak.log"];
+    NSString *timestamp = [[NSDateFormatter localizedStringFromDate:[NSDate date] 
+                                                         dateStyle:NSDateFormatterNoStyle 
+                                                         timeStyle:NSDateFormatterMediumStyle] stringByAppendingString:@" "];
+    NSString *logLine = [NSString stringWithFormat:@"[%@%@] %@\n", 
+                         debug ? @"DEBUG " : @"", 
+                         timestamp, 
+                         log];
+    
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logPath];
+    if (fileHandle) {
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:[logLine dataUsingEncoding:NSUTF8StringEncoding]];
+        [fileHandle closeFile];
+    }
+    
     if (!self.logView || !log)
         return;
 

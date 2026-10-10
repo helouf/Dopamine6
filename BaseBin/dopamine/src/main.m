@@ -32,6 +32,34 @@
 #import <libjailbreak/info.h>
 #import <libjailbreak/jbserver.h>
 
+// File logging for daemon
+FILE *gLogFile = NULL;
+
+void log_printf(const char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	
+	// Write to stdout
+	vprintf(format, args);
+	
+	// Also write to log file
+	if (!gLogFile) {
+		gLogFile = fopen("/var/mobile/Documents/dopamine_daemon.log", "a");
+		if (gLogFile) {
+			fprintf(gLogFile, "\n=== Dopamine Daemon Log - %s ===\n", [NSDate date].description.UTF8String);
+			fflush(gLogFile);
+		}
+	}
+	if (gLogFile) {
+		va_start(args, format);
+		vfprintf(gLogFile, format, args);
+		fflush(gLogFile);
+	}
+	
+	va_end(args);
+}
+
 void uart_printf(const char *format, ...)
 {
 	va_list args;
@@ -59,20 +87,20 @@ void init_libjailbreak(void)
 {	
 	int r = corellium_krw_init();
 	if (r != 0) {
-		printf("Failed initializing krw: %d\n", r);
+		log_printf("Failed initializing krw: %d\n", r);
 		exit(-1);
 	}
 
 	jbinfo_initialize_boot_constants();
 	libjailbreak_translation_init();
 
-	printf("Transferring primitive... "); fflush(stdout); usleep(1000);
+	log_printf("Transferring primitive... "); fflush(stdout); usleep(1000);
 	r = libjailbreak_physrw_pte_init(false, 0);
 	if (r == 0) {
-		printf("OK\n"); fflush(stdout); usleep(1000);
+		log_printf("OK\n"); fflush(stdout); usleep(1000);
 	}
 	else {
-		printf("Failed!\n"); fflush(stdout); usleep(1000);
+		log_printf("Failed!\n"); fflush(stdout); usleep(1000);
 		exit(-1);
 	}
 	usleep(1000);
@@ -86,7 +114,7 @@ void init_libjailbreak(void)
 
 void install_basebin_gen(void)
 {
-	printf("Installing basebin...\n"); fflush(stdout); usleep(1000);
+	log_printf("Installing basebin...\n"); fflush(stdout); usleep(1000);
 
 	NSString *usrLibPath = @"/usr/lib";
 	NSString *existingBasebin = JBROOT_PATH(@"/basebin");
@@ -94,14 +122,14 @@ void install_basebin_gen(void)
 
 	int r = basebin_generate_internal(usrLibPath, existingBasebin, targetBasebin, false);
 	if (r != 0) {
-		printf("Failed installing basebin: %d\n", r); fflush(stdout); usleep(1000);
+		log_printf("Failed installing basebin: %d\n", r); fflush(stdout); usleep(1000);
 		exit(-1);
 	}
 }
 
 void activate_basebin(NSString *basebinPath)
 {
-	printf("Activating %s basebin...\n", basebinPath.fileSystemRepresentation); fflush(stdout); usleep(1000);
+	log_printf("Activating %s basebin...\n", basebinPath.fileSystemRepresentation); fflush(stdout); usleep(1000);
 
 	NSString *fakelibDyldPath = [basebinPath stringByAppendingPathComponent:@".fakelib/dyld"];
 
@@ -109,7 +137,7 @@ void activate_basebin(NSString *basebinPath)
 	uint32_t cdhashesCount = 0;
 	file_collect_untrusted_cdhashes_by_path(fakelibDyldPath.fileSystemRepresentation, &cdhashes, &cdhashesCount);
 	if (cdhashesCount != 1) {
-		printf("Activating basebin failed: cdhashesCount != 1\n");
+		log_printf("Activating basebin failed: cdhashesCount != 1\n");
 		exit(-1);
 	}
 	
@@ -120,18 +148,18 @@ void activate_basebin(NSString *basebinPath)
 		r = trustcache_file_upload_with_uuid(dyldTCFile, DYLD_TRUSTCACHE_UUID);
 		free(dyldTCFile);
 		if (r != 0) {
-			printf("Activating basebin failed: trustcache_file_upload_with_uuid returned %d\n", r);
+			log_printf("Activating basebin failed: trustcache_file_upload_with_uuid returned %d\n", r);
 			exit(-1);
 		}
 	}
 	else {
-		printf("Activating basebin failed: trustcache_file_build_from_cdhashes returned %d\n", r);
+		log_printf("Activating basebin failed: trustcache_file_build_from_cdhashes returned %d\n", r);
 		exit(-1);
 	}
 
 	r = [[DOEnvironmentManager sharedManager] setFakelibMounted:YES];
 	if (r != 0) {
-		printf("Activating basebin failed: setFakelibMounted returned %d\n", r);
+		log_printf("Activating basebin failed: setFakelibMounted returned %d\n", r);
 		exit(-1);
 	}
 
@@ -149,7 +177,7 @@ void find_offsets(void)
 
 void fix_non_default_apps(void)
 {
-	printf("Making non default system apps visible... "); fflush(stdout); usleep(1000);
+	log_printf("Making non default system apps visible... "); fflush(stdout); usleep(1000);
 	NSError *error = [gJb showNonDefaultSystemApps];
 	if (error) {
 		printf("\nMaking non default system apps visible failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
@@ -160,7 +188,7 @@ void fix_non_default_apps(void)
 
 void ensure_dev_mode_enabled(void)
 {
-	printf("Ensuring dev mode enabled... "); fflush(stdout); usleep(1000);
+	log_printf("Ensuring dev mode enabled... "); fflush(stdout); usleep(1000);
 	NSError *error = [gJb ensureDevModeEnabled];
 	if (error) {
 		printf("\nEnsuring dev mode enabled failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
@@ -171,7 +199,7 @@ void ensure_dev_mode_enabled(void)
 
 void ensure_jailbreak_root_exists(void)
 {
-	printf("Ensuring jailbreak root existance... "); fflush(stdout); usleep(1000);
+	log_printf("Ensuring jailbreak root existance... "); fflush(stdout); usleep(1000);
 	gSystemInfo.jailbreakInfo.rootPath = NULL;
 	NSError *error = [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
 	if (error) {
@@ -183,7 +211,7 @@ void ensure_jailbreak_root_exists(void)
 
 void prepare_bootstrap(void)
 {
-	printf("Preparing bootstrap... "); fflush(stdout); usleep(1000);
+	log_printf("Preparing bootstrap... "); fflush(stdout); usleep(1000);
 	NSError *error = [[DOEnvironmentManager sharedManager] prepareBootstrap];
 	if (error) {
 		printf("\nPreparing bootstrap failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
@@ -194,7 +222,7 @@ void prepare_bootstrap(void)
 
 void update_var_jb_symlink(void)
 {
-	printf("Updating /var/69 symlink... "); fflush(stdout); usleep(1000);
+	log_printf("Updating /var/69 symlink... "); fflush(stdout); usleep(1000);
 	DOBootstrapper *bootstrapper = [[DOBootstrapper alloc] init];
 	NSError *error = [bootstrapper updateVarJbSymlink];
 	if (error) {
@@ -206,7 +234,7 @@ void update_var_jb_symlink(void)
 
 void load_basebin_trustcache(void)
 {
-	printf("Loading BaseBin Trustcache... "); fflush(stdout); usleep(1000);
+	log_printf("Loading BaseBin Trustcache... "); fflush(stdout); usleep(1000);
 	NSError *error = [gJb loadBasebinTrustcache];
 	if (error) {
 		printf("\nLoading basebin trustcache failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
@@ -217,7 +245,7 @@ void load_basebin_trustcache(void)
 
 void inject_launchd_hook(void)
 {
-	printf("Injecting launchd hook... "); fflush(stdout); usleep(1000);
+	log_printf("Injecting launchd hook... "); fflush(stdout); usleep(1000);
 	NSError *error = [gJb injectLaunchdHook];
 	if (error) {
 		printf("\nInjecting launchd hook failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
@@ -228,7 +256,7 @@ void inject_launchd_hook(void)
 
 void apply_preboot_protection(void)
 {
-	printf("Applying protection... "); fflush(stdout); usleep(1000);
+	log_printf("Applying protection... "); fflush(stdout); usleep(1000);
 	NSError *error = [gJb applyProtection];
 	if (error) {
 		printf("\nApplying protection failed: %s\n", error.description.UTF8String); fflush(stdout); usleep(1000);
@@ -262,7 +290,7 @@ void install_builtin_packages(void)
 		for (NSURL *packageURL in packageURLs) {
 			int r = install_package(packageURL.path);
 			if (r != 0) {
-				printf("WARNING: Failed to install %s (%d)\n", packageURL.path.fileSystemRepresentation, r);
+				log_printf("WARNING: Failed to install %s (%d)\n", packageURL.path.fileSystemRepresentation, r);
 			}
 		}
 		[[NSFileManager defaultManager] removeItemAtURL:packageDirURL error:nil];
@@ -284,10 +312,10 @@ void finalize_bootstrap_if_needed(bool *finalized)
 	setenv("SHELL", "/var/69/bin/sh", 1);
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath:JBROOT_PATH(@"/prep_bootstrap.sh")]) {
-		printf("Running prep_bootstrap script...\n");
+		log_printf("Running prep_bootstrap script...\n");
 		int r = exec_cmd_trusted(JBROOT_PATH("/bin/sh"), JBROOT_PATH("/prep_bootstrap.sh"), NULL);
 		if (r != 0) {
-			printf("prep_bootstrap failed: %d\n", r);
+			log_printf("prep_bootstrap failed: %d\n", r);
 			exit(-1);
 		}
 		else {
@@ -380,7 +408,7 @@ void install_dopamine(void)
 	finalize_bootstrap_if_needed(NULL);
 	load_var_jb_daemons();
 
-	printf("Dopamine installed!\n");
+	log_printf("Dopamine installed!\n");
 }
 
 void install_dopamine_from_tarball(const char *tarballPath, const char *bootstrapPath)
@@ -413,7 +441,7 @@ void activate_dopamine(void)
 	finalize_bootstrap_if_needed(NULL);
 	load_var_jb_daemons();
 
-	printf("Dopamine activated, see you on the other side!\n");
+	log_printf("Dopamine activated, see you on the other side!\n");
 }
 
 int main(int argc, char* argv[])
