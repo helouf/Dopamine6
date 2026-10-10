@@ -3,7 +3,7 @@
 
 BOOL preferencePlistNeedsRedirection(NSString *plistPath)
 {
-	if ([plistPath hasPrefix:@"/private/var/mobile/Containers"] || [plistPath hasPrefix:@"/var/db"] || [plistPath hasPrefix:@"/var/jb"]) return NO;
+	if ([plistPath hasPrefix:@"/private/var/mobile/Containers"] || [plistPath hasPrefix:@"/var/db"] || [plistPath hasPrefix:@"/var/69"]) return NO;
 
 	NSString *plistName = plistPath.lastPathComponent;
 
@@ -41,13 +41,13 @@ BOOL preferencePlistNeedsRedirection(NSString *plistPath)
 {
 	BOOL orig = %orig(bundleIdentifier, user, byHost, path, buffer);
 
-	if(orig && buffer && !access("/var/jb", F_OK))
+	if(orig && buffer && !access("/var/69", F_OK))
 	{
 		NSString* origPath = [NSString stringWithUTF8String:(char*)buffer];
 		BOOL needsRedirection = preferencePlistNeedsRedirection(origPath);
 		if (needsRedirection) {
-			//NSLog(@"Plist redirected to /var/jb: %@", origPath);
-			strcpy((char*)buffer, "/var/jb");
+			//NSLog(@"Plist redirected to /var/69: %@", origPath);
+			strcpy((char*)buffer, "/var/69");
 			strcat((char*)buffer, origPath.UTF8String);
 		}
 	}
