@@ -190,17 +190,18 @@ extern char **environ;
             [randomString appendFormat:@"%C", randomCharacter];
         }
         
-        // MODIFIED: Create preboot directory for palera1n-style jailbreak
-        // The actual jailbreak files go in preboot, /var/69 is just a symlink to it
-        NSString *jailbreakRootPath = [activePrebootPath stringByAppendingPathComponent:@"procursus"];
+        NSString *randomJailbreakFolderName = [NSString stringWithFormat:@"dopamine-%@", randomString];
+        NSString *randomizedJailbreakPath = [activePrebootPath stringByAppendingPathComponent:randomJailbreakFolderName];
+        NSString *jailbreakRootPath = [randomizedJailbreakPath stringByAppendingPathComponent:@"procursus"];
         
         if (_bootstrapNeedsMigration) {
             NSString *oldRandomizedJailbreakPath = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
-            [[NSFileManager defaultManager] removeItemAtPath:oldRandomizedJailbreakPath error:nil];
+            [[NSFileManager defaultManager] moveItemAtPath:oldRandomizedJailbreakPath toPath:randomizedJailbreakPath error:&error];
         }
-        
-        if (![[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
-            [[NSFileManager defaultManager] createDirectoryAtPath:jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:&error];
+        else {
+            if (![[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
+                [[NSFileManager defaultManager] createDirectoryAtPath:jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:&error];
+            }
         }
         
         if (!error) {
