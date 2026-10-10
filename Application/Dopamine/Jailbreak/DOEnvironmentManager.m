@@ -140,12 +140,13 @@ extern char **environ;
             }
         }
         
-        // MODIFIED: Use fixed /var/69 path for runtime but store preboot path
-        NSString *jailbreakRootPath = [activePrebootPath stringByAppendingPathComponent:@"procursus"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
-            // This attribute serves as the primary source of what the root path is
-            // Anything else in the jailbreak will get it from here
-            gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.fileSystemRepresentation);
+        if (randomizedJailbreakPath) {
+            NSString *jailbreakRootPath = [randomizedJailbreakPath stringByAppendingPathComponent:@"procursus"];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
+                // This attribute serves as the primary source of what the root path is
+                // Anything else in the jailbreak will get it from here
+                gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.fileSystemRepresentation);
+            }
         }
     }
 }
@@ -656,7 +657,7 @@ extern char **environ;
                     [self setFakelibMounted:NO];
                     jbclient_platform_set_systemwide_domain_enabled(false);
                 }
-                [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
+                [[NSFileManager defaultManager] removeItemAtPath:@"/var/69" error:nil];
             }
             else {
                 [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/69" withDestinationPath:JBROOT_PATH(@"/") error:nil];
